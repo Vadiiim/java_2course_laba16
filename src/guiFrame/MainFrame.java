@@ -196,7 +196,7 @@ public class MainFrame extends javax.swing.JFrame {
     };
 
     static final String RESULT_TEXT_NONE = " ";
-    static final String RESULT_TEXT_SHOW = "All cars, unordered:";
+    static final String  RESULT_TEXT_SHOW = "All cars, unordered:";
     static final String RESULT_TEXT_SHOW_SORTED = "All cars, ordered by ";
     static final String RESULT_TEXT_SHOW_REVERSE_SORTED = "All cars, reverse ordered by ";
     static final String RESULT_TEXT_FIND = "Find cars(s) by ";
@@ -263,7 +263,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     void viewSetCursor(JDialog dlg, Cursor cur) {
         if (dlg == null) {
-            setCursor(cur);
+             setCursor(cur);
         }
         else {
             dlg.setCursor(cur);
@@ -276,7 +276,7 @@ public class MainFrame extends javax.swing.JFrame {
         viewSetCursor(dlg, Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         {
             try {
-                List<String> result = Commands.readFile();
+                List<String> result = Commands.readFile();// get zero??//
                 fillTable(viewTable, result);
             } catch (Error | Exception e) {
                 isError = true;
@@ -437,7 +437,7 @@ public class MainFrame extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuFileExit = new javax.swing.JMenuItem();
         menuCommand = new javax.swing.JMenu();
-        menuCommandAddBook = new javax.swing.JMenuItem();
+        menuCommandAddCar = new javax.swing.JMenuItem();
         menuCommandRemove = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         menuCommandShowBooks = new javax.swing.JMenuItem();
@@ -447,29 +447,26 @@ public class MainFrame extends javax.swing.JFrame {
         menuHelp = new javax.swing.JMenu();
         menuHelpAbout = new javax.swing.JMenuItem();
 
-        parkingDialog.setTitle("Add new book");
+        parkingDialog.setTitle("Add new car");
         parkingDialog.setAlwaysOnTop(true);
         parkingDialog.setMinimumSize(new java.awt.Dimension(420, 470));
         parkingDialog.setModalityType(java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
 
-        parkingNumberLable.setText("ISBN: ");
+        parkingNumberLable.setText("Number: ");
 
-        parkingOwnerLable.setText("Author:");
+        parkingOwnerLable.setText("Owner:");
 
-        parkingSTimeLabel.setText("Name:");
+        parkingSTimeLabel.setText("Start parking:");
 
-        parkingETimeLabel.setText("Year: ");
+        parkingETimeLabel.setText("End parking: ");
 
-        bookPublisherLable.setText("Publisher:");
+        bookPublisherLable.setText("Parking time:");
 
         bookPriceLabel.setText("Price:");
 
-        bookAnnoLable.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        bookAnnoLable.setText("Annotation:");
 
-        bookAnnoArea.setColumns(20);
-        bookAnnoArea.setRows(5);
-        bookAnnoScroll.setViewportView(bookAnnoArea);
+
+
 
         bookOK.setMnemonic('d');
         bookOK.setText("Add");
@@ -516,10 +513,9 @@ public class MainFrame extends javax.swing.JFrame {
                                                         .addComponent(parkingETimeText)
                                                         .addComponent(bookPublisherText)
                                                         .addComponent(bookPriceText, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
-                                                        .addComponent(parkingNumberText, javax.swing.GroupLayout.Alignment.TRAILING)))
-                                        .addComponent(bookAnnoLable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap())
-        );
+                                                        .addComponent(parkingNumberText, javax.swing.GroupLayout.Alignment.TRAILING))))
+
+                        ));
         bookDialogLayout.setVerticalGroup(
                 bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(bookDialogLayout.createSequentialGroup()
@@ -550,7 +546,6 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(bookSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(bookAnnoLable)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(bookAnnoScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -570,7 +565,7 @@ public class MainFrame extends javax.swing.JFrame {
         sortedLabelTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         sortedLabelTitle.setText("Choose a key:");
 
-        sortedKeyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ISBN", "Author", "Name" }));
+        sortedKeyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Number", "Owner", "Parking time" }));
 
         sortedReverseCheckBox.setMnemonic('r');
         sortedReverseCheckBox.setText("Reverse");
@@ -639,7 +634,7 @@ public class MainFrame extends javax.swing.JFrame {
         chooseKeyTypeLabel.setLabelFor(chooseKeyTypeComboBox);
         chooseKeyTypeLabel.setText("Key type:");
 
-        chooseKeyTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ISBN", "Author", "Name" }));
+        chooseKeyTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Number", "Owner", "Parking time" }));
 
         chooseKeyValueLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         chooseKeyValueLabel.setLabelFor(chooseKeyValueField);
@@ -791,10 +786,10 @@ public class MainFrame extends javax.swing.JFrame {
         menuCommand.setMnemonic('c');
         menuCommand.setText("Command");
 
-        menuCommandAddBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_DOWN_MASK));
-        menuCommandAddBook.setMnemonic('a');
-        menuCommandAddBook.setText("Add book");
-        menuCommandAddBook.addMouseListener(new java.awt.event.MouseAdapter() {
+        menuCommandAddCar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_DOWN_MASK));
+        menuCommandAddCar.setMnemonic('a');
+        menuCommandAddCar.setText("Add car");
+        menuCommandAddCar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 menuCommandAddBookMouseEntered(evt);
             }
@@ -802,16 +797,16 @@ public class MainFrame extends javax.swing.JFrame {
                 menuCommandAddBookMouseExited(evt);
             }
         });
-        menuCommandAddBook.addActionListener(new java.awt.event.ActionListener() {
+        menuCommandAddCar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuCommandAddBookActionPerformed(evt);
             }
         });
-        menuCommand.add(menuCommandAddBook);
+        menuCommand.add(menuCommandAddCar);
 
         menuCommandRemove.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_DOWN_MASK));
         menuCommandRemove.setMnemonic('r');
-        menuCommandRemove.setText("Remove book");
+        menuCommandRemove.setText("Remove car");
         menuCommandRemove.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 menuCommandRemoveMouseEntered(evt);
@@ -867,7 +862,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         menuCommandFind.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.ALT_DOWN_MASK));
         menuCommandFind.setMnemonic('f');
-        menuCommandFind.setText("Find book");
+        menuCommandFind.setText("Find car");
         menuCommandFind.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 menuCommandFindMouseEntered(evt);
@@ -1179,7 +1174,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JMenuBar mainMenuBar;
     private javax.swing.JMenu menuCommand;
-    private javax.swing.JMenuItem menuCommandAddBook;
+    private javax.swing.JMenuItem menuCommandAddCar;
     private javax.swing.JMenuItem menuCommandFind;
     private javax.swing.JMenuItem menuCommandRemove;
     private javax.swing.JMenuItem menuCommandShowBooks;
