@@ -25,7 +25,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     /*--- Code by hands:*/
 
-    protected java.io.File fileData = new java.io.File("books.dat");
+    protected java.io.File fileData = new java.io.File("parking.dat");
 
     final boolean chooseFile() {
         JFileChooser file = new JFileChooser();
