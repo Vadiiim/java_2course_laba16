@@ -16,6 +16,9 @@ import parkings.*;
 import java.awt.Cursor;
 import java.util.ArrayList;
 import javax.swing.JDialog;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -25,7 +28,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     /*--- Code by hands:*/
 
-    protected java.io.File fileData = new java.io.File("parking.dat");
+    protected java.io.File fileData = new java.io.File("books.dat");
 
     final boolean chooseFile() {
         JFileChooser file = new JFileChooser();
@@ -41,14 +44,16 @@ public class MainFrame extends javax.swing.JFrame {
         return false;
     }
 
-    final parking getBook() throws ParseException {
-        parking par = new parking();
-        par.setStrnum(parkingNumberText.getText().trim());
-        par.setowner(parkingOwnerText.getText().trim());
-        par.setstart_datepark(parkingSTimeText.getText().trim());
-        par. setend_datepark(parkingETimeText.getText().trim());
-        par.setPrice(this.bookPriceText.getText().trim());
-        return par;
+    final Book getBook() throws ParseException {
+        Book book = new Book();
+        book.setStrnum(bookISBNText.getText().trim());
+        book.setowner(bookAuthorText.getText().trim());
+        book.setstart_datepark(bookNameText.getText().trim());
+        book.setend_datepark(bookYearText.getText().trim());
+        book.setparktime(bookPublisherText.getText().trim());
+        book.setPrice(this.bookPriceText.getText().trim());
+        book.setAnnotation(this.bookAnnoArea.getText().trim());
+        return book;
     }
 
     final void showError(String msg) {
@@ -61,29 +66,29 @@ public class MainFrame extends javax.swing.JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    static final String ABOUT_TEXT = "Written by Lutski Vadim";
+    static final String ABOUT_TEXT = "Written by Sergey Gutnikov";
     static final String STATUS_TEXT_DEFAULT = "Enter Alt+x to exit...";
     static final String STATUS_TEXT_FILE_OPEN = "Choose a file to work with...";
     static final String STATUS_TEXT_FILE_EXIT = "Exit application...";
     static final String STATUS_TEXT_HELP_ABOUT = "Show information about the application...";
-    static final String STATUS_TEXT_COMMAND_ADD = "Add a new car...";
-    static final String STATUS_TEXT_COMMAND_REMOVE = "Remove existing cars by key...";
-    static final String STATUS_TEXT_COMMAND_SHOW = "Show all cars...";
-    static final String STATUS_TEXT_COMMAND_SHOW_SORTED = "Show all cars sorted by key...";
-    static final String STATUS_TEXT_COMMAND_FIND = "Find and show cars by key...";
+    static final String STATUS_TEXT_COMMAND_ADD = "Add a new book...";
+    static final String STATUS_TEXT_COMMAND_REMOVE = "Remove existing book by key...";
+    static final String STATUS_TEXT_COMMAND_SHOW = "Show all books...";
+    static final String STATUS_TEXT_COMMAND_SHOW_SORTED = "Show all books sorted by key...";
+    static final String STATUS_TEXT_COMMAND_FIND = "Find and show books by key...";
 
     final void setStatusTextDefault() {
         statusBarText.setText(STATUS_TEXT_DEFAULT);
         statusBarText.repaint();
     }
 
-    static final int ROW_Number = 0;
-    static final int ROW_Owner = 1;
-    static final int ROW_ParkTime = 2;
+    static final int ROW_ISBN = 0;
+    static final int ROW_AUTHOR = 1;
+    static final int ROW_NAME = 2;
 
-    public static final Object[] TABLE_HEADER = {
-            parking.car_number, parking.car_owner, parking.Dur, parking.start_date,
-            parking.end_date, parking.P_price
+    static final Object[] TABLE_HEADER = {
+            Book.car_number, Book.car_owner, Book.start_date, Book.end_date,
+            Book.Dur, Book.P_price, Book.P_ANNOTATION
     };
     static final int[] TABLE_SIZE = {
             150, 250, 450, 50, 230, 70, 2000
@@ -111,7 +116,7 @@ public class MainFrame extends javax.swing.JFrame {
         if (src != null) {
             tm.setColumnIdentifiers(TABLE_HEADER);
             for (i = 0, n = src.size(); i < n; i++) {
-                Object[] rows = src.get(i).split(parking.AREA_DEL);
+                Object[] rows = src.get(i).split(Book.AREA_DEL);
                 if (rows.length != TABLE_HEADER.length) {
                     showError("Invalid data at position " + i);
                     continue;
@@ -138,15 +143,21 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     static final String[][] TEST_DATA = {
-            {"5432", "Хорстманн Кей",
-                    "2005-04-12 12:23:31",
-                    "2006-04-12 12:23:31", "300000"},
-            {"9780", "Deepak Vohra",
-                    "2009-03-10 12:23:31",
-                    "2011-04-10 12:23:31", "50000"},
-            {"4120", "Майер Р.",
-                    "2010-04-05 12:23:31",
-                    "2012-06-06 12:23:31", "12000"}
+            {"978-5-8459-1378-4", "Хорстманн Кей С, Корнелл Гари",
+                    "Java 2. Библиотека профессионала, том 1. Основы. 8-е издание",
+                    "2012", "ООО \"И.Д. Вильямс\"",
+                    "Книга ведущих специалистов по программированию на языке Java представляет собой обновленное издание фундаментального труда, учитывающее всю специфику новой версии платформы Java SE 6. Подробно рассматриваются такие темы, как организация и настройка среды программирования на Java, основные структуры данных, объектно-ориентированное программирование и его реализация в Java, интерфейсы, программирование графики, обработка событий, Swing, развертывание приложений и аплетов, отладка, обобщенное программирование, коллекции и построение многопоточных приложений. Книга изобилует множеством примеров, которые не только иллюстрируют концепции, но также демонстрируют способы правильной разработки, применяемые в реальных условиях. Книга рассчитана на программистов разной квалификации, а также будет полезна студентам и преподавателям дисциплин, связанных с программированием на языке Java.",
+                    "300000"},
+            {"978-1-78216-096-0", "Deepak Vohra",
+                    "Java EE Development with Eclipse",
+                    "2012", "Packt Publishing",
+                    "Develop Java EE applications with Eclipse and commonly used technologies and frameworks",
+                    "380000"},
+            {"978-5-699-50323-0", "Майер Р.",
+                    "Android 2: программирование приложений для планшетных компьютеров и смартфонов",
+                    "2011", "ООО \"Издательство Эксмо\"",
+                    "Данная книга является наилучшим руководством для программистов, желающих научиться создавать приложения для мобильной платформы Android. Она представляет собой практический курс по написанию программного обеспечения на базе второй версии Android SDK (набора инструментов для разработки программного обеспечения). Это означает, что все теоретические сведения закрепляются максимально приближенными к реальным задачам примерами. Изложение материала предполагает, что читатель владеет основами программирования и базовым уровнем языка Java (второе желательно, но не обязательно). Информация, которая в ней содержится, будет полезной как для опытных разработчиков (они могут использовать ее как справочник, пропустив первые, элементарные главы), так и для тех, кто делает свои первые шаги в сфере написания мобильных приложений для Android",
+                    "350000"}
     };
 
     final List<String> getTestData() {
@@ -155,7 +166,7 @@ public class MainFrame extends javax.swing.JFrame {
             String[] r = TEST_DATA[i];
             String str = r[0];
             for (int j = 1; j < r.length; j++) {
-                str += parking.AREA_DEL + r[j];
+                str += Book.AREA_DEL + r[j];
             }
             lst.add(i, str);
         }
@@ -196,10 +207,10 @@ public class MainFrame extends javax.swing.JFrame {
     };
 
     static final String RESULT_TEXT_NONE = " ";
-    static final String  RESULT_TEXT_SHOW = "All cars, unordered:";
-    static final String RESULT_TEXT_SHOW_SORTED = "All cars, ordered by ";
-    static final String RESULT_TEXT_SHOW_REVERSE_SORTED = "All cars, reverse ordered by ";
-    static final String RESULT_TEXT_FIND = "Find cars(s) by ";
+    static final String RESULT_TEXT_SHOW = "All books, unordered:";
+    static final String RESULT_TEXT_SHOW_SORTED = "All books, ordered by ";
+    static final String RESULT_TEXT_SHOW_REVERSE_SORTED = "All books, reverse ordered by ";
+    static final String RESULT_TEXT_FIND = "Find book(s) by ";
 
     final void setOptions(ViewOptions.Command cmd) {
 
@@ -263,7 +274,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     void viewSetCursor(JDialog dlg, Cursor cur) {
         if (dlg == null) {
-             setCursor(cur);
+            setCursor(cur);
         }
         else {
             dlg.setCursor(cur);
@@ -276,7 +287,7 @@ public class MainFrame extends javax.swing.JFrame {
         viewSetCursor(dlg, Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         {
             try {
-                List<String> result = Commands.readFile();// get zero??//
+                List<String> result = Commands.readFile();
                 fillTable(viewTable, result);
             } catch (Error | Exception e) {
                 isError = true;
@@ -349,8 +360,8 @@ public class MainFrame extends javax.swing.JFrame {
         {
             try {
                 clearTable(viewTable);
-                parking par = getBook();
-                Commands.appendFile(true, par);
+                Book book = getBook();
+                Commands.appendFile(true, book);
             } catch (Error | Exception e) {
                 isError = true;
                 errorMessage = e.getMessage();
@@ -389,15 +400,15 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        parkingDialog = new javax.swing.JDialog();
-        parkingNumberLable = new javax.swing.JLabel();
-        parkingNumberText = new javax.swing.JTextField();
-        parkingOwnerLable = new javax.swing.JLabel();
-        parkingOwnerText = new javax.swing.JTextField();
-        parkingSTimeLabel = new javax.swing.JLabel();
-        parkingSTimeText = new javax.swing.JTextField();
-        parkingETimeLabel = new javax.swing.JLabel();
-        parkingETimeText = new javax.swing.JTextField();
+        bookDialog = new javax.swing.JDialog();
+        bookISBNLable = new javax.swing.JLabel();
+        bookISBNText = new javax.swing.JTextField();
+        bookAuthorLable = new javax.swing.JLabel();
+        bookAuthorText = new javax.swing.JTextField();
+        bookNameLabel = new javax.swing.JLabel();
+        bookNameText = new javax.swing.JTextField();
+        bookYearLabel = new javax.swing.JLabel();
+        bookYearText = new javax.swing.JTextField();
         bookPublisherLable = new javax.swing.JLabel();
         bookPublisherText = new javax.swing.JTextField();
         bookPriceLabel = new javax.swing.JLabel();
@@ -437,7 +448,7 @@ public class MainFrame extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuFileExit = new javax.swing.JMenuItem();
         menuCommand = new javax.swing.JMenu();
-        menuCommandAddCar = new javax.swing.JMenuItem();
+        menuCommandAddBook = new javax.swing.JMenuItem();
         menuCommandRemove = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         menuCommandShowBooks = new javax.swing.JMenuItem();
@@ -447,26 +458,29 @@ public class MainFrame extends javax.swing.JFrame {
         menuHelp = new javax.swing.JMenu();
         menuHelpAbout = new javax.swing.JMenuItem();
 
-        parkingDialog.setTitle("Add new car");
-        parkingDialog.setAlwaysOnTop(true);
-        parkingDialog.setMinimumSize(new java.awt.Dimension(420, 470));
-        parkingDialog.setModalityType(java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
+        bookDialog.setTitle("Add new book");
+        bookDialog.setAlwaysOnTop(true);
+        bookDialog.setMinimumSize(new java.awt.Dimension(420, 470));
+        bookDialog.setModalityType(java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
 
-        parkingNumberLable.setText("Number: ");
+        bookISBNLable.setText("ISBN: ");
 
-        parkingOwnerLable.setText("Owner:");
+        bookAuthorLable.setText("Author:");
 
-        parkingSTimeLabel.setText("Start parking:");
+        bookNameLabel.setText("Name:");
 
-        parkingETimeLabel.setText("End parking: ");
+        bookYearLabel.setText("Year: ");
 
-        bookPublisherLable.setText("Parking time:");
+        bookPublisherLable.setText("Publisher:");
 
         bookPriceLabel.setText("Price:");
 
+        bookAnnoLable.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        bookAnnoLable.setText("Annotation:");
 
-
-
+        bookAnnoArea.setColumns(20);
+        bookAnnoArea.setRows(5);
+        bookAnnoScroll.setViewportView(bookAnnoArea);
 
         bookOK.setMnemonic('d');
         bookOK.setText("Add");
@@ -484,8 +498,8 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout bookDialogLayout = new javax.swing.GroupLayout(parkingDialog.getContentPane());
-        parkingDialog.getContentPane().setLayout(bookDialogLayout);
+        javax.swing.GroupLayout bookDialogLayout = new javax.swing.GroupLayout(bookDialog.getContentPane());
+        bookDialog.getContentPane().setLayout(bookDialogLayout);
         bookDialogLayout.setHorizontalGroup(
                 bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(bookDialogLayout.createSequentialGroup()
@@ -501,40 +515,41 @@ public class MainFrame extends javax.swing.JFrame {
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookDialogLayout.createSequentialGroup()
                                                 .addGroup(bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                                         .addComponent(bookPublisherLable, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                                                        .addComponent(parkingETimeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(parkingSTimeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(parkingOwnerLable, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(parkingNumberLable, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(bookYearLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(bookNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(bookAuthorLable, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(bookISBNLable, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addComponent(bookPriceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addGroup(bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(parkingOwnerText)
-                                                        .addComponent(parkingSTimeText)
-                                                        .addComponent(parkingETimeText)
+                                                        .addComponent(bookAuthorText)
+                                                        .addComponent(bookNameText)
+                                                        .addComponent(bookYearText)
                                                         .addComponent(bookPublisherText)
                                                         .addComponent(bookPriceText, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
-                                                        .addComponent(parkingNumberText, javax.swing.GroupLayout.Alignment.TRAILING))))
-
-                        ));
+                                                        .addComponent(bookISBNText, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                        .addComponent(bookAnnoLable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
+        );
         bookDialogLayout.setVerticalGroup(
                 bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(bookDialogLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(parkingNumberLable)
-                                        .addComponent(parkingNumberText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(bookISBNLable)
+                                        .addComponent(bookISBNText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(parkingOwnerLable)
-                                        .addComponent(parkingOwnerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(bookAuthorLable)
+                                        .addComponent(bookAuthorText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(parkingSTimeLabel)
-                                        .addComponent(parkingSTimeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(bookNameLabel)
+                                        .addComponent(bookNameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(parkingETimeLabel)
-                                        .addComponent(parkingETimeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(bookYearLabel)
+                                        .addComponent(bookYearText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(bookDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(bookPublisherLable)
@@ -546,6 +561,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(bookSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(bookAnnoLable)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(bookAnnoScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -565,7 +581,7 @@ public class MainFrame extends javax.swing.JFrame {
         sortedLabelTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         sortedLabelTitle.setText("Choose a key:");
 
-        sortedKeyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Number", "Owner", "Parking time" }));
+        sortedKeyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ISBN", "Author", "Name" }));
 
         sortedReverseCheckBox.setMnemonic('r');
         sortedReverseCheckBox.setText("Reverse");
@@ -634,7 +650,7 @@ public class MainFrame extends javax.swing.JFrame {
         chooseKeyTypeLabel.setLabelFor(chooseKeyTypeComboBox);
         chooseKeyTypeLabel.setText("Key type:");
 
-        chooseKeyTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Number", "Owner", "Parking time" }));
+        chooseKeyTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ISBN", "Author", "Name" }));
 
         chooseKeyValueLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         chooseKeyValueLabel.setLabelFor(chooseKeyValueField);
@@ -786,10 +802,10 @@ public class MainFrame extends javax.swing.JFrame {
         menuCommand.setMnemonic('c');
         menuCommand.setText("Command");
 
-        menuCommandAddCar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_DOWN_MASK));
-        menuCommandAddCar.setMnemonic('a');
-        menuCommandAddCar.setText("Add car");
-        menuCommandAddCar.addMouseListener(new java.awt.event.MouseAdapter() {
+        menuCommandAddBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_DOWN_MASK));
+        menuCommandAddBook.setMnemonic('a');
+        menuCommandAddBook.setText("Add book");
+        menuCommandAddBook.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 menuCommandAddBookMouseEntered(evt);
             }
@@ -797,16 +813,16 @@ public class MainFrame extends javax.swing.JFrame {
                 menuCommandAddBookMouseExited(evt);
             }
         });
-        menuCommandAddCar.addActionListener(new java.awt.event.ActionListener() {
+        menuCommandAddBook.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuCommandAddBookActionPerformed(evt);
             }
         });
-        menuCommand.add(menuCommandAddCar);
+        menuCommand.add(menuCommandAddBook);
 
         menuCommandRemove.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_DOWN_MASK));
         menuCommandRemove.setMnemonic('r');
-        menuCommandRemove.setText("Remove car");
+        menuCommandRemove.setText("Remove book");
         menuCommandRemove.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 menuCommandRemoveMouseEntered(evt);
@@ -862,7 +878,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         menuCommandFind.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.ALT_DOWN_MASK));
         menuCommandFind.setMnemonic('f');
-        menuCommandFind.setText("Find car");
+        menuCommandFind.setText("Find book");
         menuCommandFind.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 menuCommandFindMouseEntered(evt);
@@ -988,21 +1004,21 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void menuCommandAddBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCommandAddBookActionPerformed
         setStatusTextDefault();
-        parkingDialog.setLocationRelativeTo(this);
-        parkingDialog.setVisible(true);
+        bookDialog.setLocationRelativeTo(this);
+        bookDialog.setVisible(true);
     }//GEN-LAST:event_menuCommandAddBookActionPerformed
 
     private void bookOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookOKActionPerformed
 
-        boolean isError = viewAdd(parkingDialog);
-        parkingDialog.setVisible(isError);
+        boolean isError = viewAdd(bookDialog);
+        bookDialog.setVisible(isError);
         if (!isError) {
             viewLast(null);
         }
     }//GEN-LAST:event_bookOKActionPerformed
 
     private void bookCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookCloseActionPerformed
-        parkingDialog.setVisible(false);
+        bookDialog.setVisible(false);
     }//GEN-LAST:event_bookCloseActionPerformed
 
     private void menuCommandShowBooksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCommandShowBooksActionPerformed
@@ -1141,22 +1157,22 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea bookAnnoArea;
     private javax.swing.JLabel bookAnnoLable;
     private javax.swing.JScrollPane bookAnnoScroll;
-    private javax.swing.JLabel parkingOwnerLable;
-    private javax.swing.JTextField parkingOwnerText;
+    private javax.swing.JLabel bookAuthorLable;
+    private javax.swing.JTextField bookAuthorText;
     private javax.swing.JButton bookClose;
-    private javax.swing.JDialog parkingDialog;
-    private javax.swing.JLabel parkingNumberLable;
-    private javax.swing.JTextField parkingNumberText;
-    private javax.swing.JLabel parkingSTimeLabel;
-    private javax.swing.JTextField parkingSTimeText;
+    private javax.swing.JDialog bookDialog;
+    private javax.swing.JLabel bookISBNLable;
+    private javax.swing.JTextField bookISBNText;
+    private javax.swing.JLabel bookNameLabel;
+    private javax.swing.JTextField bookNameText;
     private javax.swing.JButton bookOK;
     private javax.swing.JLabel bookPriceLabel;
     private javax.swing.JTextField bookPriceText;
     private javax.swing.JLabel bookPublisherLable;
     private javax.swing.JTextField bookPublisherText;
     private javax.swing.JSeparator bookSeparator;
-    private javax.swing.JLabel parkingETimeLabel;
-    private javax.swing.JTextField parkingETimeText;
+    private javax.swing.JLabel bookYearLabel;
+    private javax.swing.JTextField bookYearText;
     private javax.swing.JButton chooseKeyCancel;
     private javax.swing.JComboBox<String> chooseKeyCompComboBox;
     private javax.swing.JLabel chooseKeyCompLabel;
@@ -1174,7 +1190,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JMenuBar mainMenuBar;
     private javax.swing.JMenu menuCommand;
-    private javax.swing.JMenuItem menuCommandAddCar;
+    private javax.swing.JMenuItem menuCommandAddBook;
     private javax.swing.JMenuItem menuCommandFind;
     private javax.swing.JMenuItem menuCommandRemove;
     private javax.swing.JMenuItem menuCommandShowBooks;

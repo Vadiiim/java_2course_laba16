@@ -114,7 +114,7 @@ public class Index implements Serializable, Closeable {
     IndexOne2N owner;
     IndexOne2N dur;
 
-    public void test(parking par) throws KeyNotUniqueException {
+    public void test(Book par) throws KeyNotUniqueException {
         assert (par != null);
         //check requirements for unique keys
         if (num.contains(par.number)) {
@@ -122,10 +122,10 @@ public class Index implements Serializable, Closeable {
         }
     }
 
-    public void put(parking par, long value) throws KeyNotUniqueException {
+    public void put(Book par, long value) throws KeyNotUniqueException {
         test(par);
         num.put(par.number, value);
-        owner.put(par.owner, parking.authorDel, value);
+        owner.put(par.owner, Book.authorDel, value);
         dur.put(par.getparktime(), value);
     }
 

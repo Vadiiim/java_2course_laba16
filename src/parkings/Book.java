@@ -7,9 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.io.*;
 import java.util.*;
-import java.time.*;
 
-public class parking implements Serializable
+public class Book implements Serializable
 {
     private static final long serialVersionUID = 1L;
     String number;
@@ -21,7 +20,7 @@ public class parking implements Serializable
     static final SimpleDateFormat format = new  SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     Date enddate = new Date();
-
+    String annotation ;
     String dur ;
     public static final String Dur = "Park_time";
     public static final String end_date = "end_date";
@@ -29,12 +28,19 @@ public class parking implements Serializable
     double price;
     public static final String P_price = "Price";
 
+    public static final String P_ANNOTATION = "Annotation";
+
 
 
     public static final String AREA_DEL = "\n";
 
     public String getStrISBN() {
         return number;
+    }
+
+    public final void setAnnotation(String strnum) {
+
+        this.annotation = strnum;
     }
 
     public final void setStrnum(String strnum) {
@@ -73,8 +79,12 @@ public class parking implements Serializable
         }
         this.price = p;
     }
+    public final void setparktime(String strDur) throws ParseException{
+        this.enddate=format.parse(strDur);
 
-    String getparktime()
+    }
+
+    public String getparktime()
     {
         long difference_In_Time = enddate.getTime() - startdate.getTime();
         dur ="" + difference_In_Time;
@@ -104,10 +114,10 @@ public class parking implements Serializable
 
     public static final String authorDel = ",";
 
-    public static parking read(Scanner fin, PrintStream out) throws IOException,
+    public static Book read(Scanner fin, PrintStream out) throws IOException,
             NumberFormatException, ParseException {
         String str;
-        parking par = new parking();
+        Book par = new Book();
         par.number = fin.nextLine().trim();
 
         if (!nextRead(car_owner, fin, out)) {
@@ -134,7 +144,7 @@ public class parking implements Serializable
         return par;
     }
 
-    public parking() {
+    public Book() {
     }
 
     public static final String areaDel = "\n";

@@ -24,7 +24,7 @@ public class Commands {
 
     public interface ReadAction {
 
-        void action(parking book, long pos, boolean zipped, String key);
+        void action(Book book, long pos, boolean zipped, String key);
     };
 
     static String fileName;
@@ -88,7 +88,7 @@ public class Commands {
         fileCopy(idxNameBak, idxName);
     }
 
-    public static synchronized void appendFile(boolean zipped, parking par)
+    public static synchronized void appendFile(boolean zipped, Book par)
             throws FileNotFoundException, IOException, ClassNotFoundException,
             KeyNotUniqueException {
         try {
@@ -110,7 +110,7 @@ public class Commands {
         ArrayList<String> list = new ArrayList<>();
         readFile(new ReadAction() {
             @Override
-            public void action(parking par, long pos, boolean zipped, String key) {
+            public void action(Book par, long pos, boolean zipped, String key) {
                 assert (par != null);
                 list.add(par.toString());
             }
@@ -125,7 +125,7 @@ public class Commands {
         long pos, num = 0;
         try ( RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             while ((pos = raf.getFilePointer()) < raf.length()) {
-                parking par = (parking) Buffer.readObject(raf, pos, wasZipped);
+                Book par = (Book) Buffer.readObject(raf, pos, wasZipped);
                 ra.action(par, pos, wasZipped[0], null);
                 num++;
             }
@@ -156,7 +156,7 @@ public class Commands {
         ArrayList<String> list = new ArrayList<>();
         readFile(arg, reverse, new ReadAction() {
             @Override
-            public void action(parking par, long pos, boolean zipped, String key) {
+            public void action(Book par, long pos, boolean zipped, String key) {
                 assert (par != null);
                 list.add(par.toString());
             }
@@ -177,7 +177,7 @@ public class Commands {
             for (String key : keys) {
                 Long[] poss = pidx.get(key);
                 for (long pos : poss) {
-                    parking par = (parking) Buffer.readObject(raf, pos, wasZipped);
+                    Book par = (Book) Buffer.readObject(raf, pos, wasZipped);
                     if (arg.equals("Owner") || arg.equals("o")) {
                         par.setowner(key);
                     }
@@ -194,7 +194,7 @@ public class Commands {
         ArrayList<String> list = new ArrayList<>();
         findByKey(type, value, new ReadAction() {
             @Override
-            public void action(parking par, long pos, boolean zipped, String key) {
+            public void action(Book par, long pos, boolean zipped, String key) {
                 assert (par != null);
                 list.add(par.toString());
             }
@@ -214,7 +214,7 @@ public class Commands {
             }
             Long[] poss = pidx.get(value);
             for (long pos : poss) {
-                parking par = (parking) Buffer.readObject(raf, pos, null);
+                Book par = (Book) Buffer.readObject(raf, pos, null);
                 ra.action(par, pos, wasZipped[0], value);
             }
         }
@@ -231,7 +231,7 @@ public class Commands {
         ArrayList<String> list = new ArrayList<>();
         findByKey(type, value, comp, new ReadAction() {
             @Override
-            public void action(parking par, long pos, boolean zipped, String key) {
+            public void action(Book par, long pos, boolean zipped, String key) {
                 assert (par != null);
                 list.add(par.toString());
             }
@@ -253,7 +253,7 @@ public class Commands {
                 if (!key.equals(value)) {
                     Long[] poss = pidx.get(key);
                     for (long pos : poss) {
-                        parking par = (parking) Buffer.readObject(raf, pos, wasZipped);
+                        Book par = (Book) Buffer.readObject(raf, pos, wasZipped);
                         ra.action(par, pos, wasZipped[0], key);
                     }
                 }
@@ -282,7 +282,7 @@ public class Commands {
             boolean[] wasZipped = new boolean[]{false};
             long pos;
             while ((pos = fileBak.getFilePointer()) < fileBak.length()) {
-                parking par = (parking) Buffer.readObject(fileBak, pos, wasZipped);
+                Book par = (Book) Buffer.readObject(fileBak, pos, wasZipped);
                 if (Arrays.binarySearch(poss, pos) < 0) { // if not found in deleted
                     long ptr = Buffer.writeObject(file, par, wasZipped[0]);
                     idx.put(par, ptr);
